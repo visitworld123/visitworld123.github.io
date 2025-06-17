@@ -39,31 +39,6 @@ layout: default
     {% endif %}
 
     <div class="clearfix">{{ content }}</div>
-
-    <!-- News -->
-    {% if page.announcements and page.announcements.enabled %}
-      <h2>
-        <a href="{{ '/news/' | relative_url }}" style="color: inherit">news</a>
-      </h2>
-      {% include news.liquid limit=true %}
-    {% endif %}
-
-    <!-- Latest posts -->
-    {% if page.latest_posts and page.latest_posts.enabled %}
-      <h2>
-        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">latest posts</a>
-      </h2>
-      {% include latest_posts.liquid %}
-    {% endif %}
-
-    <!-- Selected papers -->
-    {% if page.selected_papers %}
-      <h2>
-        <a href="{{ '/publications/' | relative_url }}" style="color: inherit">selected publications</a>
-      </h2>
-      {% include selected_papers.liquid %}
-    {% endif %}
-
     <!-- Social -->
     {% if page.social %}
       <div class="social">
@@ -78,3 +53,93 @@ layout: default
     {% endif %}
   </article>
 </div>
+    <!-- News -->
+    {% if page.announcements and page.announcements.enabled %}
+      <h2>
+        <a href="{{ '/news/' | relative_url }}" style="color: inherit">news</a>
+      </h2>
+      {% include news.liquid limit=true %}
+    {% endif %}
+
+
+
+    <!-- Selected papers -->
+    {% if page.selected_papers %}
+      <h2>
+        <a href="{{ '/publications/' | relative_url }}" style="color: inherit">Selected publications</a>
+      </h2>
+      {% include selected_papers.liquid %}
+    {% endif %}
+
+    <h2>
+      <a  style="color: inherit">Awards</a>
+    </h2>
+
+<ul class="card-text font-weight-light list-group list-group-flush">
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 text-center date-column">
+                <span class="badge font-weight-bold danger-color-dark text-uppercase align-middle" style="min-width: 75px">2024.06</span>
+            </div>
+            <div class="col-xs-10 col-sm-10 col-md-10 mt-2 mt-md-0">
+                <h6 class="title font-weight ml-1 ml-md-4">
+                    <a>Outstanding Master Thesis Award, Beihang University</a> 
+                </h6>
+            </div>
+        </div> 
+    </li> 
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 text-center date-column">
+                <span class="badge font-weight-bold danger-color-dark text-uppercase align-middle" style="min-width: 75px">2021.06</span>
+            </div>
+            <div class="col-xs-10 col-sm-10 col-md-10 mt-2 mt-md-0">
+                <h6 class="title font-weight ml-1 ml-md-4">
+                    <a >Outstanding graduate student of NJUST, NJUST </a> 
+                </h6>
+            </div>
+        </div> 
+    </li>
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 text-center date-column">
+                <span class="badge font-weight-bold danger-color-dark text-uppercase align-middle" style="min-width: 75px">2019/2020</span>
+            </div>
+            <div class="col-xs-10 col-sm-10 col-md-10 mt-2 mt-md-0">
+                <h6 class="title font-weight ml-1 ml-md-4">
+                    <a >Merit Student, NJUST </a> 
+                </h6>
+            </div>
+        </div> 
+    </li>
+</ul>
+
+<h2>
+  <a  style="color: inherit">Academic Services</a>
+</h2>
+<strong>Journal Reviewer:</strong> 
+<ul>
+    <li>Information Fusion</li>
+    <li>ACM Transactions on Intelligent Systems and Technology (TIST)</li>
+    <li>International Journal of Machine Learning and Cybernetics (IJMLC)</li>
+    <li>Machine Learning Journal (MLJ)</li>
+    <li>Neural Networks</li>
+    <li>Journal of Artificial Intelligence Research (JAIR)</li>
+    <li>Transactions on Artificial Intelligence (TAI) </li>
+
+</ul>
+<strong>Conference Reviewer:</strong>
+<ul>
+    <li>ACM Multimedia (ACM MM), 2024</li>
+    <li>International Conference on Learning Representations (ICLR), 2023-2025</li>
+    <li>International Conference on Machine Learning (ICML) 2025</li>
+    <li>Conference on Neural Information Processing Systems (NeurIPS), 2024-2025</li>
+    <li>IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP) 2025</li>
+    <li>IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2025</li>
+    <li>IEEE International Conference on Robotics & Automation (ICRA) 2025</li>
+    <li>Artificial Intelligence and Statistics (AISTATS) 2025</li>
+    <li>International Joint Conference on Neural Networks (IJCNN) 2025</li>
+    <li>Conference on Uncertainty in Artificial Intelligence (UAI) 2025</li>
+</ul>
+
+<script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=080808&w=400&t=tt&d=H5K9U0zxRItH8AFuSfR4tv5eCYcnuxOYKpcnIsQz2vg&co=ffffff&cmo=b065cb&cmn=ea1b1b&ct=808080'></script>
