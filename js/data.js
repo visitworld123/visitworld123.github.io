@@ -178,7 +178,6 @@ const PAPERS = [
     venue: 'AAAI 2026', year: 2026,
     abstract: 'A structural-entropy-guided incremental learning method for open-world multimodal social event detection, using structural entropy to organize evolving event structure and continually learn newly emerging events.',
     links: {},
-    img: 'images/papers/structural.png',
   },
   {
     key: 'cai2023efficient', topic: 'others', selected: false,
@@ -220,7 +219,7 @@ const TALKS = [
 
 /* Guestbook (Supabase) — fill url + anonKey after creating a free project (see README).
    Leave blank to keep the guestbook in "not connected yet" mode. */
-const GUESTBOOK = { url: '', anonKey: '', table: 'guestbook' };
+const GUESTBOOK = { url: 'https://avnccjpvqoutdyzdpwar.supabase.co', anonKey: 'sb_publishable_W6sUbPEq387-J8xCcK-hGA_s62tsyA-', table: 'guestbook' };
 
 /* expose for main.js (and flat fallback) */
 window.SITE = { PROFILE, TOPICS, PAPERS, NEWS, SERVICE, TALKS, GUESTBOOK };
