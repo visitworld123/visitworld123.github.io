@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zhiqin (Brian) Yang — PhD @ HKUST · Collaborative Learning & LLMs</title>
+<meta name="description" content="Zhiqin (Brian) Yang is a PhD student at HKUST (Clear Water Bay) studying two questions on the path to AGI — what machines must learn, and how they should learn it — across LLM reasoning, agentic models, and collaborative learning. Step into an interactive seaside study.">
+<meta name="author" content="Zhiqin Yang">
+<meta property="og:title" content="Zhiqin (Brian) Yang — Interactive Homepage">
+<meta property="og:description" content="A seaside study over Clear Water Bay. Click glowing markers to glide between the desk, the paper walls, and the news board.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/profile.jpg">
+<link rel="icon" href="images/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loader"><div class="loader-inner">
+  <div class="loader-name">ZHIQIN&nbsp;YANG</div>
+  <div class="loader-sub">opening the window to the bay…</div>
+  <div class="loader-bar"><span id="loader-fill"></span></div>
+</div></div>
+
+<!-- 3D -->
+<canvas id="scene"></canvas>
+<div id="hotspots" aria-hidden="true"></div>
+<div id="tooltip" role="status"></div>
+
+<div id="fp-start"><button class="fp-start-chip" type="button">
+  <span id="fp-start-label">Click a glowing ◉ to explore</span>
+  <span class="fp-start-sub">or use the menu · Esc to step back</span>
+</button></div>
+
+<!-- HUD -->
+<header id="hud-top">
+  <div class="hud-id">
+    <div class="hud-name">Zhiqin (Brian) Yang</div>
+    <div class="hud-role">PhD @ HKUST · Collaborative Learning · LLMs</div>
+  </div>
+  <nav id="hud-nav" aria-label="Sections">
+    <button data-target="about">About</button>
+    <button data-target="research">Research</button>
+    <button data-target="news">News</button>
+    <button data-target="publications">Publications</button>
+    <button data-target="education">Education</button>
+    <button data-target="experience">Experience</button>
+    <button data-target="awards">Awards</button>
+    <button data-target="service">Service</button>
+    <button data-target="talks">Talks</button>
+    <button data-target="beyond">Beyond</button>
+    <button data-target="guestbook">Guestbook</button>
+    <button data-target="contact">Contact</button>
+    <button id="mode-toggle" title="Switch between 3D scene and plain page">2D</button>
+  </nav>
+</header>
+
+<div id="hud-hint">Click a marker to glide · <b>WASD</b> to walk · drag to look around</div>
+
+<!-- GLANCEABLE OVERVIEW CARD (shown on load; the "see it at a glance" layer) -->
+<section id="intro-card" aria-label="Overview">
+  <button id="intro-explore" type="button">Explore the 3D study ↗</button>
+  <div class="intro-head">
+    <img src="images/profile.jpg" alt="Zhiqin Yang" class="intro-photo">
+    <div>
+      <h1>Zhiqin (Brian) Yang</h1>
+      <p class="intro-role">PhD @ <b>HKUST</b> · Clear Water Bay</p>
+      <p class="intro-line">Toward AGI — <b>what</b> machines must learn, &amp; <b>how</b> they should learn it</p>
+      <div class="intro-links">
+        <a href="https://scholar.google.com/citations?user=DSjGPu0AAAAJ" target="_blank" rel="noopener">Scholar</a>
+        <a href="https://github.com/visitworld123" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:yangzqccc@gmail.com">Email</a>
+      </div>
+    </div>
+  </div>
+  <div class="intro-topics" id="intro-topics"></div>
+  <div class="intro-foot"><span id="intro-news"></span></div>
+</section>
+
+<!-- CONTENT PANEL -->
+<main id="panel" aria-live="polite">
+  <div class="panel-chrome">
+    <span id="panel-icon"></span>
+    <h2 id="panel-title"></h2>
+    <button id="panel-close" aria-label="Close panel">✕</button>
+  </div>
+  <div id="panel-body">
+
+    <!-- ABOUT -->
+    <section class="content" id="content-about" data-icon="💻" data-title="About Me">
+      <div class="about-head">
+        <img class="about-photo" src="images/profile.jpg" alt="Portrait of Zhiqin Yang">
+        <div>
+          <h3>Zhiqin (Brian) Yang</h3>
+          <p>PhD student at <b>HKUST</b>, Clear Water Bay.</p>
+          <div class="chip-row">
+            <span class="chip">LLM Reasoning</span><span class="chip coral">Agentic Models</span>
+            <span class="chip">Collaborative Learning</span><span class="chip">Trustworthy ML</span>
+          </div>
+        </div>
+      </div>
+      <p>I am a PhD student at HKUST, supervised by Prof. <a href="https://hkust.edu.hk/about/leadership/professor-yike-guo-bsc-phd" target="_blank" rel="noopener">Yike Guo</a> and Prof. <a href="https://facultyprofiles.hkust.edu.hk/profiles.php?profile=wei-xue-weixue" target="_blank" rel="noopener">Wei Xue</a>. I also work closely with Prof. <a href="https://bhanml.github.io/" target="_blank" rel="noopener">Bo Han</a> and Prof. <a href="https://yonggangzhang9412.github.io/" target="_blank" rel="noopener">Yonggang Zhang</a> at the <a href="https://github.com/tmlr-group" target="_blank" rel="noopener">TMLR group</a>, HKBU.</p>
+      <p>Prior to this, I earned my M.S. from Beihang University (BUAA), advised by Prof. <a href="https://penghao-bdsc.github.io/" target="_blank" rel="noopener">Hao Peng</a>, and completed my B.S. at Nanjing University of Science and Technology (NJUST), where I spent four enriching years.</p>
+      <p>My research revolves around two intertwined questions on the path toward AGI: <b>what</b> a machine needs to learn to get there, and <b>how</b> a machine should learn it. Everything I work on — LLM reasoning, agentic models, and collaborative learning — is organized around these two questions.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://scholar.google.com/citations?user=DSjGPu0AAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+        <a class="btn" href="https://github.com/visitworld123" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-ghost" href="mailto:yangzqccc@gmail.com">Email</a>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="content" id="content-research" data-icon="🧮" data-title="Research Directions">
+      <p>Two questions drive everything I do, both on the path toward AGI: <b>what</b> a machine needs to learn to get there, and <b>how</b> it should learn it. The directions below are how I pursue them.</p>
+      <h4>LLM Reasoning &amp; Alignment</h4>
+      <p>Preference alignment (rethinking DPO vs. RLHF), reasoning-data selection for RL, and linguistic principles for foundation models.</p>
+      <div class="chip-row"><span class="chip">DPO / RLHF</span><span class="chip">RL Post-training</span><span class="chip">Reasoning</span></div>
+      <h4>Agentic Models &amp; Memory</h4>
+      <p>Human-symbiotic agent networks and on-the-fly agent memory optimization.</p>
+      <div class="chip-row"><span class="chip">Agents</span><span class="chip">Memory</span><span class="chip">Governance</span></div>
+      <h4>Collaborative Learning</h4>
+      <p>Robust learning under data heterogeneity, label deficiency, and noisy clients — with applications in privacy-preserving healthcare.</p>
+      <div class="chip-row"><span class="chip">Heterogeneity</span><span class="chip">Noisy Clients</span><span class="chip">Privacy</span></div>
+    </section>
+
+    <!-- NEWS (rendered from data.js) -->
+    <section class="content" id="content-news" data-icon="📰" data-title="News">
+      <p class="flat-only" style="color:var(--muted)">Latest updates, newest first.</p>
+      <ul class="news-list" id="news-list"></ul>
+    </section>
+
+    <!-- PUBLICATIONS (rendered from data.js) -->
+    <section class="content" id="content-publications" data-icon="📚" data-title="Publications">
+      <p style="color:var(--muted);font-size:14px;margin-top:0">Framed on the walls by topic — click any paper for its abstract &amp; links. <a href="https://scholar.google.com/citations?user=DSjGPu0AAAAJ" target="_blank" rel="noopener">Full list on Scholar ↗</a></p>
+      <div class="pub-tabs" id="pub-tabs"></div>
+      <div class="pub-grid" id="pub-grid"></div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="content" id="content-education" data-icon="🎓" data-title="Education">
+      <div class="tl">
+        <div class="tl-item"><div class="tl-date">2025 – present</div>
+          <h4>Ph.D. · The Hong Kong University of Science and Technology</h4>
+          <p class="tl-sub">Advisors: Prof. Yike Guo &amp; Prof. Wei Xue · Clear Water Bay, Hong Kong</p></div>
+        <div class="tl-item"><div class="tl-date">– 2024</div>
+          <h4>M.S. · Beihang University (BUAA)</h4>
+          <p class="tl-sub">Advisor: Prof. Hao Peng · <b>Outstanding Master Thesis Award</b></p></div>
+        <div class="tl-item"><div class="tl-date">B.S.</div>
+          <h4>Nanjing University of Science and Technology (NJUST)</h4>
+          <p class="tl-sub">Four years of undergraduate study</p></div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="content" id="content-experience" data-icon="💼" data-title="Experience">
+      <div class="tl">
+        <div class="tl-item"><div class="tl-date">Nov 2025 – Feb 2026</div>
+          <h4>Algorithm Intern · Tencent LightSpeed</h4>
+          <p class="tl-sub">Shenzhen · supervised by Dr. Dong Fang</p>
+          <p>Research on preference alignment — rethinking the equivalence between DPO and RLHF.</p></div>
+        <div class="tl-item"><div class="tl-date">Aug 2025 – Oct 2025</div>
+          <h4>Algorithm Intern · HKGAI</h4>
+          <p class="tl-sub">Hong Kong · supervised by Dr. Yonggang Zhang</p>
+          <p>LLM SFT on a downstream domain: QA-pair dataset construction &amp; cleaning; supervised fine-tuning of Qwen3-Next-80B-A3B-Instruct with Megatron + LoRA; and evaluation of the fine-tuned model.</p></div>
+        <div class="tl-item"><div class="tl-date">Jun 2024 – Sept 2024</div>
+          <h4>Algorithm Intern · GigaAI</h4>
+          <p class="tl-sub">Beijing · supervised by Dr. Zheng Zhu</p>
+          <p>Research on video generation — planning mechanical-arm manipulation in a simulation environment in a generative manner (e.g., video generation via DiT or SVD).</p></div>
+      </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section class="content" id="content-awards" data-icon="🏆" data-title="Honors & Awards">
+      <ul class="plain awards">
+        <li><span class="medal">🎖️</span><div><b>Outstanding Master Thesis Award</b> · Beihang University · 2024</div></li>
+      </ul>
+    </section>
+
+    <!-- BEYOND -->
+    <section class="content" id="content-beyond" data-icon="🏀" data-title="Beyond Academia">
+      <p>Away from research —</p>
+      <ul class="plain">
+        <li>🏀 <b>Basketball</b> &amp; a devoted fan of <b>Kobe Bryant</b>.</li>
+        <li>🎧 Live music — <b>hip-hop &amp; R&amp;B</b>, with <i>Nous Underground</i> (XAC) a favorite.</li>
+        <li>📖 Chinese history, especially the <b>Ming Dynasty</b>.</li>
+      </ul>
+      <p style="color:var(--muted)">Happy to talk about any of these — or potential collaborations.</p>
+    </section>
+
+    <!-- ACADEMIC SERVICE -->
+    <section class="content" id="content-service" data-icon="📋" data-title="Academic Service">
+      <div id="svc-body"></div>
+    </section>
+
+    <!-- TALKS -->
+    <section class="content" id="content-talks" data-icon="🎤" data-title="Talks & Media">
+      <ul class="plain" id="talks-list"></ul>
+    </section>
+
+    <!-- GUESTBOOK -->
+    <section class="content" id="content-guestbook" data-icon="📖" data-title="Guestbook">
+      <p style="color:var(--muted);margin-top:0">Walked through the study? Leave a note by the sea — no account needed.</p>
+      <form id="gb-form" class="gb-form">
+        <input id="gb-name" maxlength="40" placeholder="Your name" autocomplete="off">
+        <textarea id="gb-msg" maxlength="280" rows="3" placeholder="Say hi, or leave a message…"></textarea>
+        <div class="gb-row"><button type="submit" class="btn">Sign the guestbook</button><span id="gb-status"></span></div>
+      </form>
+      <ul id="gb-list" class="gb-list"></ul>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="content" id="content-contact" data-icon="✉️" data-title="Contact">
+      <p>Please feel free to reach out about collaborations or shared passions.</p>
+      <ul class="plain">
+        <li>✉️ <a href="mailto:yangzqccc@gmail.com">yangzqccc@gmail.com</a></li>
+        <li>🎓 <a href="https://scholar.google.com/citations?user=DSjGPu0AAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
+        <li>🐙 <a href="https://github.com/visitworld123" target="_blank" rel="noopener">github.com/visitworld123</a></li>
+        <li>💼 <a href="https://www.linkedin.com/in/zhiqin-y-50a209193" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li>🐦 <a href="https://x.com/Zhiqin_visity" target="_blank" rel="noopener">@Zhiqin_visity</a></li>
+        <li>📍 HKUST · Clear Water Bay · Hong Kong</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<div id="scrim"></div>
+<footer id="hud-foot">© 2026 Zhiqin Yang · a little study by Clear Water Bay</footer>
+
+<noscript>
+  <style>#loader,#scene,#hud-hint,#fp-start{display:none!important}
+    #panel{position:static;transform:none;width:auto;max-width:820px;margin:60px auto}
+    .content{display:block!important;border-bottom:1px solid #ccd;padding:20px 0}</style>
+  <p style="text-align:center;padding:12px">JavaScript is off — here is the plain text. The paper walls &amp; news board need JS; see <a href="https://scholar.google.com/citations?user=DSjGPu0AAAAJ">Google Scholar</a>.</p>
+</noscript>
+
+<script src="js/data.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
