@@ -75,6 +75,7 @@ kbd{font-family:var(--font-b);background:var(--navy);color:#fff;border-radius:6p
   font-size:12.5px;background:rgba(4,40,66,.4);padding:6px 14px;border-radius:20px;backdrop-filter:blur(4px);
   transition:opacity .4s}
 #hud-hint.faded{opacity:0}
+body.touch #hud-hint{display:none}   /* on phones the D-pad + markers are self-explanatory */
 
 #hud-foot{position:fixed;bottom:8px;right:14px;z-index:24;color:rgba(255,255,255,.6);font-size:11px}
 
@@ -88,6 +89,16 @@ kbd{font-family:var(--font-b);background:var(--navy);color:#fff;border-radius:6p
   border:2px solid rgba(255,255,255,.5);overflow:hidden;margin:0 auto}
 .pb-zone{position:absolute;left:0;right:0;bottom:46%;height:8%;background:rgba(80,220,120,.9)}
 .pb-marker{position:absolute;left:-3px;right:-3px;height:6px;bottom:0%;background:#fff;box-shadow:0 0 8px #fff;border-radius:3px}
+
+/* ---------- touch controls (mobile) ---------- */
+#touch-controls{position:fixed;left:16px;bottom:22px;z-index:24;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
+.tc-pad{position:relative;width:150px;height:150px}
+.tc-btn{position:absolute;width:52px;height:52px;border:0;border-radius:14px;background:rgba(4,40,66,.5);
+  color:#fff;font-size:20px;line-height:1;backdrop-filter:blur(4px);touch-action:none}
+.tc-btn.on{background:var(--coral)}
+.tc-up{top:0;left:49px}.tc-down{bottom:0;left:49px}.tc-left{top:49px;left:0}.tc-right{top:49px;right:0}
+#tc-action{position:fixed;right:20px;bottom:34px;z-index:24;width:74px;height:74px;border-radius:50%;border:0;
+  background:rgba(226,72,61,.9);color:#fff;font-size:32px;display:none;touch-action:none;box-shadow:var(--shadow)}
 
 /* ---------- content panel ---------- */
 #panel{position:fixed;z-index:40;top:0;right:0;height:100%;width:min(560px,92vw);
@@ -103,7 +114,7 @@ kbd{font-family:var(--font-b);background:var(--navy);color:#fff;border-radius:6p
 #panel-close:hover{background:var(--coral);color:#fff}
 #panel-body{padding:20px 22px 40px;overflow-y:auto}
 .content{display:none} .content.active{display:block}
-body.flat #panel{position:static;transform:none;width:auto;max-width:860px;margin:0 auto;height:auto;
+body.flat #panel{position:static;transform:none;backdrop-filter:none;width:auto;max-width:860px;margin:0 auto;height:auto;
   background:#fff;border-left:0;box-shadow:none}
 
 /* content typography */
@@ -164,7 +175,8 @@ ul.plain li{padding:7px 0;border-bottom:1px solid var(--panel-line);font-size:14
 .pub-card-body .auth{font-size:11px;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 
 /* paper detail overlay (within panel) */
-.pub-detail{position:absolute;inset:0;background:var(--panel);z-index:3;display:none;flex-direction:column}
+.pub-detail{position:absolute;inset:0;background:#fff;z-index:3;display:none;flex-direction:column}
+body.flat .pub-detail{position:fixed;top:var(--navh,96px);right:0;bottom:0;left:0;z-index:60;max-width:none;margin:0}   /* 2D: cover viewport below the fixed nav */
 .pub-detail.open{display:flex}
 .pub-detail-scroll{overflow-y:auto;padding:20px 22px 40px}
 .pub-detail-back{margin:16px 0 0 18px;align-self:flex-start;border:0;cursor:pointer;background:rgba(0,51,102,.08);
@@ -245,9 +257,9 @@ body.flat #intro-card{display:none}
 body.flat #scrim{display:none}
 
 /* ---------- FLAT / no-webgl fallback ---------- */
-body.flat{overflow:auto;background:linear-gradient(180deg,#eaf5fb,#f6f1e7)}
+body.flat{overflow:auto;background:linear-gradient(180deg,#eaf5fb,#f6f1e7);padding-top:var(--navh,96px)}
 body.flat #scene,body.flat #hotspots,body.flat #hud-hint,body.flat #fp-start,body.flat #tooltip,body.flat #loader{display:none!important}
-body.flat #hud-top{position:sticky;background:var(--navy)}
+body.flat #hud-top{z-index:70;background:var(--navy)}   /* stays fixed at top (from base), above the paper overlay */
 body.flat .content{display:block!important;border-bottom:1px solid var(--panel-line);padding:26px 0}
 body.flat #panel-title,body.flat .panel-chrome{display:none}
 body.flat #panel-body{padding-top:16px}
