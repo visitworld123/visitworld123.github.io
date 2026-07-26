@@ -93,7 +93,7 @@ const PAPERS = [
     authors: ['Parker Liu', 'Chenxin Li', 'Zhengxin Li', 'Yipeng Wu', 'Wuyang Li', 'Zhiqin Yang', 'Zhenyuan Zhang', 'Yunlong Lin', 'Sirui Han', 'Brandon Y. Feng'],
     venue: 'NeurIPS 2025', year: 2025,
     abstract: 'IR3D-Bench evaluates vision-language models on 3D scene understanding by framing it as agentic inverse rendering: the model must actively reconstruct a scene, testing whether VLMs genuinely understand spatial structure rather than pattern-matching.',
-    links: { pdf: 'https://arxiv.org/pdf/2506.23329' ,homepage: 'https://ir3d-bench.github.io/'},
+    links: { pdf: 'https://arxiv.org/pdf/2506.23329' ,web: 'https://ir3d-bench.github.io/'},
     img: 'images/papers/ir3d.png',
   },
 
