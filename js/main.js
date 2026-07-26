@@ -524,8 +524,8 @@ function releaseShot(){ aiming=false; powerBar.style.display='none'; shotsTook++
   const p0=courtBall.position.clone(), t=0.95, G=9.8;
   ballVel=new THREE.Vector3((ballTargetV.x-p0.x)/t,(ballTargetV.y-p0.y)/t+0.5*G*t,(ballTargetV.z-p0.z)/t);
   ballState='flying'; ballT=0; ballScored=false; }
-function updateCourt(dt){ courtHud.style.display=courtMode?'block':'none';
-  if(!courtMode)return; const now=performance.now(); let moving=false;
+function updateCourt(dt){ if(!courtMode || panelStation){ courtHud.style.display='none'; return; }   // freeze the court while a panel is open
+  courtHud.style.display='block'; const now=performance.now(); let moving=false;
   const f=(keys.w?1:0)-(keys.s?1:0), s=(keys.d?1:0)-(keys.a?1:0);
   if((f||s)&&ballState!=='flying'&&!aiming){ const fx=Math.sin(yaw),fz=-Math.cos(yaw),rx=Math.cos(yaw),rz=Math.sin(yaw);
     let dx=fx*f+rx*s,dz=fz*f+rz*s; const L=Math.hypot(dx,dz)||1; dx/=L;dz/=L;
@@ -621,7 +621,7 @@ function openStation(id,pushHash=true){
   if(id.startsWith('papers-')){                        // paper-wall stations open the Publications panel at that topic
     if(introCard){ introCard.classList.remove('show'); introCard.classList.add('dismissed'); }
     openPublications(false); selectTopic(id.slice(7),false);
-    const ps=stations.find(s=>s.id===id); if(ps&&!document.body.classList.contains('flat')) flyTo(ps.cam,ps.tgt,1.1);
+    const ps=stations.find(s=>s.id===id); if(ps&&!courtMode&&!document.body.classList.contains('flat')) flyTo(ps.cam,ps.tgt,1.1);
     if(pushHash) history.replaceState(null,'','#'+id); return;
   }
   const st=stations.find(s=>s.id===id); if(!st && !document.getElementById('content-'+id)) return;
@@ -633,7 +633,7 @@ function openStation(id,pushHash=true){
   if(document.body.classList.contains('flat')){ sec.scrollIntoView({behavior:reduceMotion?'auto':'smooth'}); return; }
   introDone=true; fpStart.classList.remove('show'); hint.classList.add('faded');
   panelStation=st||{id}; document.body.classList.add('panel-open'); panel.classList.add('open'); scrim.classList.add('show');
-  if(st) flyTo(st.cam,st.tgt,1.1);
+  if(st && !courtMode) flyTo(st.cam,st.tgt,1.1);
   if(pushHash) history.replaceState(null,'','#'+id);
 }
 function openPublications(pushHash=true){ captureReturn(); const sec=setActive('publications'); if(introCard){ introCard.classList.remove('show'); introCard.classList.add('dismissed'); } panelIcon.textContent=sec.dataset.icon; panelTitle.textContent=sec.dataset.title;
@@ -641,7 +641,7 @@ function openPublications(pushHash=true){ captureReturn(); const sec=setActive('
   if(document.body.classList.contains('flat')){ sec.scrollIntoView({behavior:'smooth'}); return; }
   introDone=true; fpStart.classList.remove('show'); hint.classList.add('faded');
   panelStation={id:'publications'}; document.body.classList.add('panel-open'); panel.classList.add('open'); scrim.classList.add('show');
-  flyTo(PUBVIEW.cam,PUBVIEW.tgt,1.1);
+  if(!courtMode) flyTo(PUBVIEW.cam,PUBVIEW.tgt,1.1);
   if(pushHash) history.replaceState(null,'','#publications');
 }
 function closePanel(){ if(!panelStation)return; const wasPub=panelStation.id==='publications'; panelStation=null;
@@ -680,7 +680,7 @@ function selectTopic(k,fly=true){ curTopic=k; const t=TOPICS[k];
     const im=new Image(); im.onload=()=>{ const el=card.querySelector('.pub-thumb'); el.style.backgroundImage=`url(${paperImg(p)})`; el.style.backgroundSize='cover'; el.style.backgroundPosition='center'; }; im.src=paperImg(p);
     card.addEventListener('click',()=>openPaperDetail(p.key)); pubGrid.appendChild(card); });
   const stId='papers-'+k; const st=stations.find(s=>s.id===stId);
-  if(fly && st && panelStation && !document.body.classList.contains('flat')) flyTo(st.cam,st.tgt,0.9);
+  if(fly && st && panelStation && !courtMode && !document.body.classList.contains('flat')) flyTo(st.cam,st.tgt,0.9);
 }
 selectTopic('reasoning',false);
 
@@ -714,7 +714,7 @@ function bibtexOf(p){ const proc=/NeurIPS|ICLR|ICML|CVPR|ACL|AAAI|ICRA|MSN|EMNLP
 function openPaperDetail(key){ const p=PAPERS.find(x=>x.key===key); if(!p)return;
   if(!panelStation) openPublications(); else { setActive('publications'); panelIcon.textContent='📚'; panelTitle.textContent='Publications'; nav.querySelectorAll('button[data-target]').forEach(b=>b.classList.toggle('active',b.dataset.target==='publications')); if(!panel.classList.contains('open')){ panel.classList.add('open'); scrim.classList.add('show'); document.body.classList.add('panel-open'); panelStation={id:'publications'}; } }
   selectTopic(p.topic,false);
-  const st=stations.find(s=>s.id==='papers-'+p.topic); if(st&&!document.body.classList.contains('flat')) flyTo(st.cam,st.tgt,0.9);
+  const st=stations.find(s=>s.id==='papers-'+p.topic); if(st&&!courtMode&&!document.body.classList.contains('flat')) flyTo(st.cam,st.tgt,0.9);
   closePaperDetail();
   const t=TOPICS[p.topic]; const links=[]; if(p.links.pdf)links.push(`<a class="btn" href="${p.links.pdf}" target="_blank" rel="noopener">PDF</a>`); if(p.links.code)links.push(`<a class="btn btn-ghost" href="${p.links.code}" target="_blank" rel="noopener">Code</a>`); if(p.links.web)links.push(`<a class="btn btn-ghost" href="${p.links.web}" target="_blank" rel="noopener">Project</a>`);
   links.push(`<button class="btn btn-ghost cite-btn" type="button">Cite ⌄</button>`);
