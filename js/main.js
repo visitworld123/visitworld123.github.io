@@ -412,8 +412,8 @@ function showTip(st){ const v=st.anchorV.clone().project(camera); tooltip.textCo
 
 /* ---------- interaction: raycast click for papers ---------- */
 const raycaster=new THREE.Raycaster(); const pointer=new THREE.Vector2();
-let dragging=false, downXY=null, moved=0;
-canvas.addEventListener('pointerdown',e=>{ downXY=[e.clientX,e.clientY]; moved=0; dragging=true; });
+let dragging=false, downXY=null, moved=0, lastX=0, lastY=0;
+canvas.addEventListener('pointerdown',e=>{ downXY=[e.clientX,e.clientY]; lastX=e.clientX; lastY=e.clientY; moved=0; dragging=true; });
 addEventListener('pointerup',e=>{ dragging=false;
   if(!downXY) return; const d=Math.hypot(e.clientX-downXY[0],e.clientY-downXY[1]); downXY=null;
   if(d>6||panelStation||tween||!introDone) return;
@@ -427,7 +427,7 @@ room.traverse(m=>{ if(m.userData&&m.userData.station) clickTargets.push(m); });
 
 /* drag-look at overview */
 addEventListener('pointermove',e=>{ if(!dragging||panelStation||tween||!introDone) return; if(document.body.classList.contains('flat'))return;
-  const dx=e.movementX||0, dy=e.movementY||0; moved+=Math.abs(dx)+Math.abs(dy);
+  const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);   // client-delta works for touch too
   yaw-=dx*0.003; pitch=THREE.MathUtils.clamp(pitch-dy*0.003,-0.55,0.5); applyLook(); });
 
 /* ---------- WASD free-walk (hybrid; teleport stays primary) ---------- */
@@ -570,12 +570,34 @@ function updateCourt(dt){ courtHud.style.display=courtMode?'block':'none';
     if(courtBall.position.y<0.18||ballT>3){ ballState='free'; courtBall.position.copy(BALL_FREE); if(player.userData.armR)player.userData.armR.rotation.x=0.3; } }
   if(shootAnim>0 && player.userData.armR) player.userData.armR.rotation.x=-2.3;   // both-hands-up shot pose
 }
-addEventListener('keydown',e=>{ if(e.code==='Space' && courtMode && !typingInField()){ e.preventDefault();
+function courtAction(){ if(!courtMode)return;
   if(ballState==='held'&&!aiming){ aiming=true; power=0; powerDir=1;
     zoneCenter=0.2+Math.random()*0.6;                       // green zone moves every shot
     const z=powerBar.querySelector('.pb-zone'); if(z){ z.style.bottom=((zoneCenter-zoneHalf)*100)+'%'; z.style.height=(zoneHalf*2*100)+'%'; }
     powerBar.style.display='block'; }
-  else if(aiming){ releaseShot(); } } });
+  else if(aiming){ releaseShot(); } }
+addEventListener('keydown',e=>{ if(e.code==='Space' && courtMode && !typingInField()){ e.preventDefault(); courtAction(); } });
+
+/* on-screen touch controls (phones/tablets have no WASD) */
+const isTouch = matchMedia('(pointer:coarse)').matches || ('ontouchstart' in window);
+let touchPad=null, touchAct=null;
+if(isTouch){
+  document.body.classList.add('touch');
+  touchPad=document.createElement('div'); touchPad.id='touch-controls';
+  touchPad.innerHTML=`<div class="tc-pad">
+    <button class="tc-btn tc-up" data-k="w" aria-label="forward">▲</button>
+    <button class="tc-btn tc-left" data-k="a" aria-label="left">◀</button>
+    <button class="tc-btn tc-right" data-k="d" aria-label="right">▶</button>
+    <button class="tc-btn tc-down" data-k="s" aria-label="back">▼</button></div>`;
+  document.body.appendChild(touchPad);
+  touchPad.querySelectorAll('.tc-btn').forEach(btn=>{ const k=btn.dataset.k;
+    const dn=e=>{ e.preventDefault(); keys[k]=true; btn.classList.add('on'); };
+    const up=e=>{ e.preventDefault(); keys[k]=false; btn.classList.remove('on'); };
+    btn.addEventListener('pointerdown',dn); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('pointerleave',up); });
+  touchAct=document.createElement('button'); touchAct.id='tc-action'; touchAct.textContent='🏀'; touchAct.setAttribute('aria-label','shoot');
+  document.body.appendChild(touchAct);
+  touchAct.addEventListener('pointerdown',e=>{ e.preventDefault(); courtAction(); });
+}
 
 /* ---------- camera tween ---------- */
 let tween=null, introDone=false, panelStation=null;
@@ -589,7 +611,12 @@ function updateTween(dt){ if(!tween)return; tween.t+=dt/tween.dur; const k=easeI
 
 /* ---------- panel ---------- */
 function setActive(id){ document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); const sec=document.getElementById('content-'+id); if(sec)sec.classList.add('active'); return sec; }
+let returnView=null;
+function currentView(){ const d=new THREE.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch)).multiplyScalar(9);
+  return { pos:camera.position.toArray(), tgt:camera.position.clone().add(d).toArray() }; }
+function captureReturn(){ if(!panelStation && !courtMode && !document.body.classList.contains('flat')) returnView=currentView(); }
 function openStation(id,pushHash=true){
+  captureReturn(); closePaperDetail();                 // remember where we were; drop any open paper detail
   if(id==='publications') return openPublications();
   if(id.startsWith('papers-')){                        // paper-wall stations open the Publications panel at that topic
     if(introCard){ introCard.classList.remove('show'); introCard.classList.add('dismissed'); }
@@ -609,7 +636,7 @@ function openStation(id,pushHash=true){
   if(st) flyTo(st.cam,st.tgt,1.1);
   if(pushHash) history.replaceState(null,'','#'+id);
 }
-function openPublications(pushHash=true){ const sec=setActive('publications'); if(introCard){ introCard.classList.remove('show'); introCard.classList.add('dismissed'); } panelIcon.textContent=sec.dataset.icon; panelTitle.textContent=sec.dataset.title;
+function openPublications(pushHash=true){ captureReturn(); const sec=setActive('publications'); if(introCard){ introCard.classList.remove('show'); introCard.classList.add('dismissed'); } panelIcon.textContent=sec.dataset.icon; panelTitle.textContent=sec.dataset.title;
   nav.querySelectorAll('button[data-target]').forEach(b=>b.classList.toggle('active',b.dataset.target==='publications'));
   if(document.body.classList.contains('flat')){ sec.scrollIntoView({behavior:'smooth'}); return; }
   introDone=true; fpStart.classList.remove('show'); hint.classList.add('faded');
@@ -621,7 +648,8 @@ function closePanel(){ if(!panelStation)return; const wasPub=panelStation.id==='
   panel.classList.remove('open'); scrim.classList.remove('show'); document.body.classList.remove('panel-open');
   closePaperDetail(); nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
   history.replaceState(null,'',location.pathname);
-  if(!document.body.classList.contains('flat')){ flyTo(HOME.cam,HOME.tgt,1.0); fpStart.classList.add('show'); }
+  if(!document.body.classList.contains('flat') && !courtMode){ const rv=returnView; returnView=null;
+    flyTo(rv?rv.pos:HOME.cam, rv?rv.tgt:HOME.tgt, 1.0); fpStart.classList.add('show'); }
 }
 document.getElementById('panel-close').addEventListener('click',closePanel);
 scrim.addEventListener('click',closePanel);
@@ -630,7 +658,7 @@ nav.addEventListener('click',e=>{ const b=e.target.closest('button[data-target]'
 fpStart.querySelector('button').addEventListener('click',()=>{ /* just a hint */ fpStart.classList.remove('show'); });
 
 modeBtn.addEventListener('click',()=>{ const flat=document.body.classList.toggle('flat'); modeBtn.textContent=flat?'3D':'2D';
-  if(flat){ panel.classList.remove('open'); scrim.classList.remove('show'); panelStation=null; document.body.classList.remove('panel-open'); document.querySelectorAll('.content').forEach(c=>c.classList.add('active')); }
+  if(flat){ closePaperDetail(); requestAnimationFrame(setNavH); panel.classList.remove('open'); scrim.classList.remove('show'); panelStation=null; document.body.classList.remove('panel-open'); document.querySelectorAll('.content').forEach(c=>c.classList.add('active')); }
   else { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); if(introDone)fpStart.classList.add('show'); }
 });
 
@@ -641,7 +669,7 @@ modeBtn.addEventListener('click',()=>{ const flat=document.body.classList.toggle
 const pubTabs=document.getElementById('pub-tabs'), pubGrid=document.getElementById('pub-grid');
 let curTopic='reasoning';
 (function buildTabs(){ Object.entries(TOPICS).forEach(([k,t])=>{ const b=document.createElement('button'); b.className='pub-tab'; b.textContent=t.label; b.dataset.topic=k; b.style.setProperty('--c',t.color);
-  b.addEventListener('click',()=>selectTopic(k)); pubTabs.appendChild(b); }); })();
+  b.addEventListener('click',()=>{ closePaperDetail(); selectTopic(k); }); pubTabs.appendChild(b); }); })();
 function selectTopic(k,fly=true){ curTopic=k; const t=TOPICS[k];
   pubTabs.querySelectorAll('.pub-tab').forEach(b=>{ const on=b.dataset.topic===k; b.classList.toggle('active',on); b.style.background=on?t.color:''; });
   pubGrid.innerHTML='';
@@ -704,7 +732,11 @@ function openPaperDetail(key){ const p=PAPERS.find(x=>x.key===key); if(!p)return
   citeBtn.addEventListener('click',()=>{ const open=wrap.hasAttribute('hidden'); wrap.toggleAttribute('hidden'); citeBtn.textContent=open?'Cite ⌃':'Cite ⌄'; });
   detailEl.querySelector('.copy-btn').addEventListener('click',e=>{ navigator.clipboard?.writeText(bibtexOf(p)); e.target.textContent='Copied!'; setTimeout(()=>e.target.textContent='Copy',1400); });
   panel.appendChild(detailEl);
+  const pb=document.getElementById('panel-body'); if(pb)pb.scrollTop=0;   // reset list to top so it isn't stuck scrolled
+  const ds=detailEl.querySelector('.pub-detail-scroll'); if(ds)ds.scrollTop=0;
 }
+function setNavH(){ document.body.style.setProperty('--navh', document.getElementById('hud-top').offsetHeight+'px'); }
+addEventListener('resize',()=>{ if(document.body.classList.contains('flat')) setNavH(); });
 function closePaperDetail(){ if(detailEl){ detailEl.remove(); detailEl=null; } }
 
 /* ---------- academic service + talks (from data.js) ---------- */
@@ -759,7 +791,11 @@ function animate(){ requestAnimationFrame(animate); const now=performance.now();
   if(!reduceMotion){ drawSea(now); seaTex.needsUpdate=true;
     const sg=window._seaGroup; if(sg){ if(sg.userData.boat){ sg.userData.boat.position.y=Math.sin(now*0.0008)*0.25; sg.userData.boat.rotation.z=Math.sin(now*0.0008)*0.04; sg.userData.boat.position.x=9+Math.sin(now*0.00012)*6; }
       if(sg.userData.gulls) sg.userData.gulls.children.forEach(g=>{ g.position.x+=0.01; if(g.position.x>18)g.position.x=-18; g.position.y+=Math.sin(now*0.002+g.userData.ph)*0.004; g.children[0].rotation.z=0.5+Math.sin(now*0.006+g.userData.ph)*0.3; g.children[1].rotation.z=-0.5-Math.sin(now*0.006+g.userData.ph)*0.3; }); } }
-  updateHotspots(); if(tooltip.classList.contains('show')){} renderer.render(scene,camera); }
+  updateHotspots();
+  if(touchPad){ const show=introDone && !panelStation && !document.body.classList.contains('flat') && !introCard.classList.contains('show');
+    touchPad.style.display=show?'block':'none'; touchAct.style.display=(show&&courtMode)?'block':'none'; }
+  renderer.render(scene,camera); }
 requestAnimationFrame(animate);
 
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+if(document.body.classList.contains('flat')) requestAnimationFrame(setNavH);   // page may start in 2D (no WebGL)
