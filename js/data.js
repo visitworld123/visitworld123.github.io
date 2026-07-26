@@ -93,7 +93,7 @@ const PAPERS = [
     authors: ['Parker Liu', 'Chenxin Li', 'Zhengxin Li', 'Yipeng Wu', 'Wuyang Li', 'Zhiqin Yang', 'Zhenyuan Zhang', 'Yunlong Lin', 'Sirui Han', 'Brandon Y. Feng'],
     venue: 'NeurIPS 2025', year: 2025,
     abstract: 'IR3D-Bench evaluates vision-language models on 3D scene understanding by framing it as agentic inverse rendering: the model must actively reconstruct a scene, testing whether VLMs genuinely understand spatial structure rather than pattern-matching.',
-    links: { pdf: 'https://arxiv.org/pdf/2506.23329' },
+    links: { pdf: 'https://arxiv.org/pdf/2506.23329' ,homepage: 'https://ir3d-bench.github.io/'},
     img: 'images/papers/ir3d.png',
   },
 
@@ -104,7 +104,7 @@ const PAPERS = [
     authors: ['Zhiqin Yang', 'Yonggang Zhang', 'Chenxin Li', 'Yiu-ming Cheung', 'Bo Han', 'Yixuan Yuan'],
     venue: 'NeurIPS 2025', year: 2025,
     abstract: 'FedGPS tackles data heterogeneity in federated learning through statistical rectification, correcting client-side statistical shifts so that the aggregated global model stays robust when clients hold non-IID data.',
-    links: { pdf: 'https://arxiv.org/pdf/2510.20250' },
+    links: { pdf: 'https://arxiv.org/pdf/2510.20250', code:'https://github.com/visitworld123/FedGPS' },
     img: 'images/papers/FedGPS.png',
   },
   {
@@ -150,7 +150,7 @@ const PAPERS = [
     authors: ['Boyuan Wang', 'Xiaofeng Wang', 'Chaojun Ni', 'Guosheng Zhao', 'Zhiqin Yang', 'Zheng Zhu', 'Muyang Zhang', 'Yukun Zhou', 'Xinze Chen', 'Guan Huang', 'et al.'],
     venue: 'CVPR 2025', year: 2025,
     abstract: 'HumanDreamer generates controllable human-motion videos through a decoupled pipeline that separates motion generation from appearance rendering, improving controllability and quality of synthesized human videos.',
-    links: { pdf: 'https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_HumanDreamer_Generating_Controllable_Human-Motion_Videos_via_Decoupled_Generation_CVPR_2025_paper.pdf' },
+    links: { pdf: 'https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_HumanDreamer_Generating_Controllable_Human-Motion_Videos_via_Decoupled_Generation_CVPR_2025_paper.pdf', homepage:'https://humandreamer.github.io/' },
     img: 'images/papers/humandreamer.png',
   },
   {
@@ -177,7 +177,8 @@ const PAPERS = [
     authors: ['Zhiwei Yang', 'Haimei Qin', 'Xiaoyan Yu', 'Hao Peng', 'Lei Jiang', 'Li Sun', 'Zhiqin Yang'],
     venue: 'AAAI 2026', year: 2026,
     abstract: 'A structural-entropy-guided incremental learning method for open-world multimodal social event detection, using structural entropy to organize evolving event structure and continually learn newly emerging events.',
-    links: {},
+    links: {pdf: 'https://ojs.aaai.org/index.php/AAAI/article/view/38647'},
+     img: 'images/papers/structural.png',
   },
   {
     key: 'cai2023efficient', topic: 'others', selected: false,
